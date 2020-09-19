@@ -1,7 +1,7 @@
-package gaa.shtfaced.application
+package gaa.kadvice.application
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class ShtFacedApplication : Application()
+class KadviceApplication : Application()

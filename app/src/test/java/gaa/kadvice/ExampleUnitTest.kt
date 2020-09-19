@@ -1,4 +1,4 @@
-package gaa.shtfaced
+package gaa.kadvice
 
 import org.junit.Test
 

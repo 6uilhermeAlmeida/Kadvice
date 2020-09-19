@@ -1,4 +1,4 @@
-package gaa.shtfaced
+package gaa.kadvice
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

@@ -2,11 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ShtFaced.iml" filepath="$PROJECT_DIR$/.idea/modules/ShtFaced.iml" group="ShtFaced" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="ShtFaced/app" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/data/data.iml" filepath="$PROJECT_DIR$/.idea/modules/data/data.iml" group="ShtFaced/data" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/home/home.iml" filepath="$PROJECT_DIR$/.idea/modules/home/home.iml" group="ShtFaced/home" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/usescases/usescases.iml" filepath="$PROJECT_DIR$/.idea/modules/usescases/usescases.iml" group="ShtFaced/usescases" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Kadvice.iml" filepath="$PROJECT_DIR$/.idea/modules/Kadvice.iml" group="Kadvice" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="Kadvice/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/data/data.iml" filepath="$PROJECT_DIR$/.idea/modules/data/data.iml" group="Kadvice/data" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/home/home.iml" filepath="$PROJECT_DIR$/.idea/modules/home/home.iml" group="Kadvice/home" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/usescases/usescases.iml" filepath="$PROJECT_DIR$/.idea/modules/usescases/usescases.iml" group="Kadvice/usescases" />
     </modules>
   </component>
 </project>
