@@ -1,0 +1,5 @@
+include ':data'
+include ':usescases'
+include ':home'
+include ':app'
+rootProject.name = "ShtFaced"
