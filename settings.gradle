@@ -1,5 +1,5 @@
 include ':data'
-include ':usescases'
+include ':core-android'
 include ':home'
 include ':app'
 rootProject.name = "Kadvice"

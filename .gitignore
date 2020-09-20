@@ -35,6 +35,7 @@ captures/
 
 # IntelliJ
 *.iml
+.idea/sonarlint
 .idea/workspace.xml
 .idea/tasks.xml
 .idea/gradle.xml
