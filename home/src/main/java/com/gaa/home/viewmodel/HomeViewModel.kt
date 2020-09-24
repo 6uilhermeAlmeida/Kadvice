@@ -1,7 +1,6 @@
 package com.gaa.home.viewmodel
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
 import android.net.Network
@@ -73,33 +72,43 @@ class HomeViewModel @ViewModelInject constructor(
 
     fun requestAdvice() {
         _state.value = Loading((_state.value as? Content)?.lightColor)
+
         requestAdviceJob?.cancel()
         requestAdviceJob = viewModelScope.launch(exceptionHandler) {
 
             val (advice, photo) = getRandomAdviceAndMatchingPhoto()
 
-            val (drawable, palette) = withContext(dispatchers.io) {
+            val (optionalDrawable, palette) = withContext(dispatchers.io) {
                 getDrawableAndPalette(photo.url)
             }
 
-            val fallbackDarkColor = applicationContext.getColor(R.color.darkGrey)
             val fallbackLightColor = applicationContext.getColor(R.color.lightGrey)
-
-            val lightColor = palette?.run { lightVibrantSwatch ?: lightMutedSwatch }?.rgb
+            val lightColor = palette?.run { lightVibrantSwatch ?: lightMutedSwatch }?.hsl
+                ?.withSaturation(1f)
+                ?.toColor()
                 ?: fallbackLightColor
 
-            val darkColor = palette?.run { darkVibrantSwatch ?: darkMutedSwatch }?.rgb
-                ?.let { ColorUtils.blendARGB(it, Color.BLACK, 0.25f) }
+            val fallbackDarkColor = applicationContext.getColor(R.color.darkGrey)
+            val darkColor = palette?.run { darkVibrantSwatch ?: darkMutedSwatch }?.hsl
+                ?.withLightness(0.2f)
+                ?.toColor()
                 ?: fallbackDarkColor
 
-            _state.value = Success(
-                advice.text,
-                drawable ?: ColorDrawable(fallbackDarkColor),
-                lightColor,
-                darkColor
-            )
+            val drawable = optionalDrawable ?: ColorDrawable(fallbackDarkColor)
+
+            _state.value = Success(advice.text, drawable, lightColor, darkColor)
         }
     }
+
+    private fun FloatArray.withSaturation(targetSaturation: Float) = this.apply {
+        this[1] = targetSaturation
+    }
+
+    private fun FloatArray.withLightness(targetLightness: Float) = this.apply {
+        this[2] = targetLightness
+    }
+
+    private fun FloatArray.toColor(): Int = ColorUtils.HSLToColor(this)
 
     override fun onCleared() {
         connectivityManager.unregisterNetworkCallback(networkCallback)

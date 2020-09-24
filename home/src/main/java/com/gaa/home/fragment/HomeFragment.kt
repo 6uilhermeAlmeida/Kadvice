@@ -78,7 +78,7 @@ class HomeFragment : Fragment() {
 
         val backgroundAndLoadingAnimations = listOf(
             launch {
-                val startScale = 1.3f
+                val startScale = 1.2f
                 iv_bg_home.scaleX = startScale
                 iv_bg_home.scaleY = startScale
 
@@ -99,21 +99,11 @@ class HomeFragment : Fragment() {
 
     private suspend fun presentLoading() = coroutineScope {
         listOf(
-            launch { tv_home.animate().alpha(0f).wait(.3f) },
-            launch { iv_dim_home.animate().alpha(0f).wait(.3f) }
+            launch { tv_home.animate().setDuration(500).alpha(0f).wait(.5f) },
+            launch { iv_dim_home.animate().alpha(0f).wait(.3f) },
         ).joinAll()
 
-        launch { iv_bg_home.animate().scaleY(1f).scaleX(1f).alpha(0f).wait(.6f) }.join()
+        launch { iv_bg_home.animate().scaleY(1f).scaleX(1f).setDuration(500).alpha(0f).wait(.8f) }.join()
         launch { pgbar_home.animate().alpha(1f).wait() }.join()
-    }
-
-    private suspend fun List<Pair<View, Float>>.animateAlpha() = coroutineScope {
-        mapNotNull { (view, targetAlpha) ->
-            launch {
-                view.visibility = View.VISIBLE
-                view.animate().alpha(targetAlpha).wait()
-                if (targetAlpha <= 0f) view.visibility = View.INVISIBLE
-            }
-        }.joinAll()
     }
 }
