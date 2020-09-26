@@ -5,12 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AccelerateDecelerateInterpolator
+import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
-import com.gaa.extension.wait
+import coil.load
 import com.gaa.home.R
 import com.gaa.home.state.HomeScreenState.Content
 import com.gaa.home.state.HomeScreenState.Loading
@@ -18,9 +18,7 @@ import com.gaa.home.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.home_fragment.*
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -35,7 +33,22 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewLifecycleOwner.lifecycleScope.collectState()
-        fab_home.setOnClickListener { viewModel.requestAdvice() }
+
+        home_motion_layout.setTransitionListener(object : MotionLayout.TransitionListener {
+
+            override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {}
+            override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) {}
+            override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {}
+
+            override fun onTransitionCompleted(mLayout: MotionLayout?, id: Int) {
+                if (id == R.id.loading) {
+                    viewModel.requestAdvice()
+                    mLayout?.enableTransition(R.id.startToLoading, false)
+                } else {
+                    mLayout?.enableTransition(R.id.startToLoading, true)
+                }
+            }
+        })
     }
 
     private fun LifecycleCoroutineScope.collectState() = launchWhenResumed {
@@ -49,61 +62,24 @@ class HomeFragment : Fragment() {
 
     private fun CoroutineScope.onNewContent(state: Content) = launch {
         tv_home.text = state.text
-        iv_bg_home.setImageDrawable(state.drawable)
+        iv_bg_home.load(state.drawable) {
+            crossfade(300)
+        }
         state.lightColor.run { setMainColor(this) }
         state.darkColor.run { iv_dim_home.setBackgroundColor(this) }
-        presentContent()
+        home_motion_layout.setTransition(R.id.startToLoading)
+        home_motion_layout.transitionToStart()
     }
 
     private fun CoroutineScope.onLoading(state: Loading) = launch {
         state.color?.run { setMainColor(this) }
-        presentLoading()
+        home_motion_layout.setTransition(R.id.startToLoading)
+        home_motion_layout.transitionToEnd()
     }
 
     private fun setMainColor(color: Int) = color.run {
         val colorStateList = ColorStateList.valueOf(this)
         tv_home.setTextColor(this)
-        fab_home.backgroundTintList = colorStateList
         pgbar_home.indeterminateTintList = colorStateList
-    }
-
-    private suspend fun presentContent() = coroutineScope {
-
-        listOf(iv_bg_home, tv_home, iv_dim_home).forEach {
-            it.alpha = 0f
-            it.scaleY = 1f
-            it.scaleX = 1f
-            it.visibility = View.VISIBLE
-        }
-
-        val backgroundAndLoadingAnimations = listOf(
-            launch {
-                val startScale = 1.2f
-                iv_bg_home.scaleX = startScale
-                iv_bg_home.scaleY = startScale
-
-                iv_bg_home.animate().scaleX(1.1f).scaleY(1.1f).alpha(1.1f)
-                    .setInterpolator(AccelerateDecelerateInterpolator())
-                    .wait(.3f)
-            },
-            launch { iv_dim_home.animate().alpha(.8f).wait(.3f) },
-            launch { pgbar_home.animate().alpha(0f).wait(.3f) }
-        )
-
-        backgroundAndLoadingAnimations.joinAll()
-
-        val textAnimation = launch { tv_home.animate().alpha(1f).wait() }
-
-        textAnimation.join()
-    }
-
-    private suspend fun presentLoading() = coroutineScope {
-        listOf(
-            launch { tv_home.animate().setDuration(500).alpha(0f).wait(.5f) },
-            launch { iv_dim_home.animate().alpha(0f).wait(.3f) },
-        ).joinAll()
-
-        launch { iv_bg_home.animate().scaleY(1f).scaleX(1f).setDuration(500).alpha(0f).wait(.8f) }.join()
-        launch { pgbar_home.animate().alpha(1f).wait() }.join()
     }
 }

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_motion_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/darkGrey"
+    app:layoutDescription="@xml/home_fragment_scene2"
     tools:context=".fragment.HomeFragment">
 
     <ImageView
@@ -22,6 +24,7 @@
         android:id="@+id/iv_dim_home"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:alpha="0.8"
         android:contentDescription="@null"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -36,7 +39,6 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginBottom="8dp"
         android:fontFamily="@font/abril_fatface"
         android:hyphenationFrequency="full"
         android:lineSpacingMultiplier="0.8"
@@ -45,8 +47,8 @@
         app:autoSizeMinTextSize="12sp"
         app:autoSizeStepGranularity="2sp"
         app:autoSizeTextType="uniform"
-        app:layout_constraintBottom_toTopOf="@+id/fab_home"
-        app:layout_constraintEnd_toEndOf="@+id/fab_home"
+        app:layout_constraintBottom_toTopOf="@id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Hello" />
@@ -54,29 +56,33 @@
     <ProgressBar
         android:id="@+id/pgbar_home"
         style="@style/Widget.AppCompat.ProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="8dp"
         android:indeterminate="true"
         android:indeterminateTint="@color/lightGrey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_refresh_home" />
+
+    <TextView
+        android:id="@+id/tv_refresh_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:alpha="0.6"
+        android:text="@string/swipe_up_for_a_new_advice"
+        android:textColor="@color/lightGrey"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:drawableTopCompat="@drawable/ic_round_keyboard_arrow_up_24" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_home"
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:src="@drawable/ic_baseline_refresh_24"
-        android:tint="@android:color/black"
-        app:backgroundTint="@color/lightGrey"
-        app:fabSize="normal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:useCompatPadding="true" />
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="120dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.motion.widget.MotionLayout>
