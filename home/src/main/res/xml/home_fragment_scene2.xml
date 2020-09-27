@@ -55,15 +55,16 @@
         android:id="@+id/startToLoading"
         motion:constraintSetEnd="@+id/loading"
         motion:constraintSetStart="@+id/start"
-        motion:duration="500">
-        <KeyFrameSet>
-            <KeyAttribute
-                android:alpha="0"
-                motion:framePosition="37"
-                motion:motionTarget="@id/pgbar_home" />
-        </KeyFrameSet>
+        motion:duration="300">
         <OnSwipe
             motion:dragDirection="dragUp"
+            motion:dragScale="5"
             motion:onTouchUp="decelerateAndComplete" />
+        <KeyFrameSet >
+            <KeyAttribute
+                motion:motionTarget="@+id/pgbar_home"
+                motion:framePosition="80"
+                android:alpha="0" />
+        </KeyFrameSet>
     </Transition>
 </MotionScene>

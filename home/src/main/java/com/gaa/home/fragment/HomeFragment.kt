@@ -63,7 +63,7 @@ class HomeFragment : Fragment() {
     private fun CoroutineScope.onNewContent(state: Content) = launch {
         tv_home.text = state.text
         iv_bg_home.load(state.drawable) {
-            crossfade(300)
+            crossfade(1000)
         }
         state.lightColor.run { setMainColor(this) }
         state.darkColor.run { iv_dim_home.setBackgroundColor(this) }
