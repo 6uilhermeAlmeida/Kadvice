@@ -40,6 +40,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.3.1'
     implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation project(path: ':domain')
+    implementation project(path: ':concurrency')
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -51,4 +53,10 @@ dependencies {
     // Ktor
     api "io.ktor:ktor-client-cio:$ktor_version"
     api "io.ktor:ktor-client-serialization-jvm:$ktor_version"
+
+    // Coil
+    api "io.coil-kt:coil:$coil_version"
+
+    // Palette
+    api "androidx.palette:palette-ktx:1.0.0"
 }

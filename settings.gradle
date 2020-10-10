@@ -1,3 +1,5 @@
+include ':concurrency'
+include ':domain'
 include ':data'
 include ':core-android'
 include ':home'

@@ -1,118 +1,75 @@
 package com.gaa.home.viewmodel
 
-import android.content.Context
-import android.graphics.drawable.ColorDrawable
+import android.annotation.SuppressLint
 import android.net.ConnectivityManager
-import android.net.Network
 import android.net.NetworkCapabilities
-import android.net.NetworkRequest
 import android.util.Log
-import androidx.core.graphics.ColorUtils
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gaa.dispatcher.DispatcherProvider
+import com.gaa.domain.usecase.GetDrawableWithColors
+import com.gaa.domain.usecase.GetRandomAdviceAndMatchingPhoto
+import com.gaa.extension.networkAvailabilityAsFlow
+import com.gaa.extension.toColor
+import com.gaa.extension.withLightness
+import com.gaa.extension.withSaturation
 import com.gaa.home.R
 import com.gaa.home.state.HomeScreenState
-import com.gaa.home.state.HomeScreenState.Content
-import com.gaa.home.state.HomeScreenState.Content.Error
-import com.gaa.home.state.HomeScreenState.Content.Success
-import com.gaa.home.state.HomeScreenState.Loading
-import com.gaa.usecase.GetDrawableAndPalette
-import com.gaa.usecase.GetRandomAdviceAndMatchingPhoto
-import dagger.hilt.android.qualifiers.ApplicationContext
+import com.gaa.home.state.HomeScreenState.*
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
+@SuppressLint("MissingPermission")
 class HomeViewModel @ViewModelInject constructor(
-    @ApplicationContext private val applicationContext: Context,
     private val getRandomAdviceAndMatchingPhoto: GetRandomAdviceAndMatchingPhoto,
-    private val getDrawableAndPalette: GetDrawableAndPalette,
-    private val connectivityManager: ConnectivityManager,
-    private val dispatchers: DispatcherProvider
+    private val getDrawableWithColors: GetDrawableWithColors,
+    private val connectivityManager: ConnectivityManager
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<HomeScreenState>(Loading())
-    val state: StateFlow<HomeScreenState>
+    private val _state = MutableStateFlow<HomeScreenState?>(null)
+    val state: StateFlow<HomeScreenState?>
         get() = _state
-
-    private var requestAdviceJob: Job? = null
-
-    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
-        override fun onAvailable(network: Network) {
-            super.onAvailable(network)
-            if (_state.value is Error) requestAdvice()
-        }
-    }
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Log.e("HomeViewModel", "Error with request.", throwable)
-        val darkColor = applicationContext.getColor(R.color.darkGrey)
-        _state.value = Error(
-            "Error. Please try again later.",
-            ColorDrawable(darkColor),
-            applicationContext.getColor(R.color.red),
-            darkColor
-        )
+        _state.value = Error(R.string.home_error)
     }
 
     init {
         requestAdvice()
-
-        val defaultNetworkRequest = NetworkRequest.Builder()
-            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-            .build()
-
-        connectivityManager.registerNetworkCallback(defaultNetworkRequest, networkCallback)
+        viewModelScope.startNetworkListener()
     }
 
     fun requestAdvice() {
-        _state.value = Loading((_state.value as? Content)?.lightColor)
+        if (_state.value is Loading) return
 
-        requestAdviceJob?.cancel()
-        requestAdviceJob = viewModelScope.launch(exceptionHandler) {
-
+        _state.startLoadingState()
+        viewModelScope.launch(exceptionHandler) {
             val (advice, photo) = getRandomAdviceAndMatchingPhoto()
+            val drawableWithColors = getDrawableWithColors(photo.url)
 
-            val (optionalDrawable, palette) = withContext(dispatchers.io) {
-                getDrawableAndPalette(photo.url)
-            }
-
-            val fallbackLightColor = applicationContext.getColor(R.color.lightGrey)
-            val lightColor = palette?.run { lightVibrantSwatch ?: lightMutedSwatch }?.hsl
-                ?.withSaturation(1f)
-                ?.toColor()
-                ?: fallbackLightColor
-
-            val fallbackDarkColor = applicationContext.getColor(R.color.darkGrey)
-            val darkColor = palette?.run { darkVibrantSwatch ?: darkMutedSwatch }?.hsl
-                ?.withLightness(0.2f)
-                ?.toColor()
-                ?: fallbackDarkColor
-
-            val drawable = optionalDrawable ?: ColorDrawable(fallbackDarkColor)
+            val lightColor = drawableWithColors?.lightColorHsl?.withSaturation(1f)?.toColor()
+            val darkColor = drawableWithColors?.darkColorHsl?.withLightness(0.2f)?.toColor()
+            val drawable = drawableWithColors?.drawable
 
             _state.value = Success(advice.text, drawable, lightColor, darkColor)
         }
     }
 
-    private fun FloatArray.withSaturation(targetSaturation: Float) = this.apply {
-        this[1] = targetSaturation
+    private fun CoroutineScope.startNetworkListener() = launch {
+        connectivityManager.networkAvailabilityAsFlow {
+            addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+        }.collect { isNetworkAvailable ->
+            if (_state.value is Error && isNetworkAvailable) requestAdvice()
+        }
     }
 
-    private fun FloatArray.withLightness(targetLightness: Float) = this.apply {
-        this[2] = targetLightness
-    }
-
-    private fun FloatArray.toColor(): Int = ColorUtils.HSLToColor(this)
-
-    override fun onCleared() {
-        connectivityManager.unregisterNetworkCallback(networkCallback)
-        super.onCleared()
+    private fun MutableStateFlow<HomeScreenState?>.startLoadingState() {
+        value = Loading(value == null, value?.background, value?.lightColor, value?.darkColor)
     }
 }
 

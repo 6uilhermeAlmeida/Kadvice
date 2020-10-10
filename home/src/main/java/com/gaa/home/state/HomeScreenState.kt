@@ -1,30 +1,33 @@
 package com.gaa.home.state
 
 import android.graphics.drawable.Drawable
+import androidx.annotation.StringRes
 
-sealed class HomeScreenState {
+sealed class HomeScreenState(
+    open val background: Drawable?,
+    open val lightColor: Int?,
+    open val darkColor: Int?
+) {
 
-    data class Loading(val color: Int? = null) : HomeScreenState()
+    data class Loading(
+        val isInitial: Boolean = false,
+        override val background: Drawable?,
+        override val lightColor: Int?,
+        override val darkColor: Int?
+    ) : HomeScreenState(background, lightColor, darkColor)
 
-    sealed class Content(
-        open val text: String,
-        open val drawable: Drawable,
-        open val lightColor: Int,
-        open val darkColor: Int
-    ) : HomeScreenState() {
+    data class Success(
+        val text: String,
+        override val background: Drawable?,
+        override val lightColor: Int?,
+        override val darkColor: Int?
+    ) : HomeScreenState(background, lightColor, darkColor)
 
-        data class Success(
-            override val text: String,
-            override val drawable: Drawable,
-            override val lightColor: Int,
-            override val darkColor: Int
-        ) : Content(text, drawable, lightColor, darkColor)
+    data class Error(
+        @StringRes val textResId: Int,
+        override val background: Drawable? = null,
+        override val lightColor: Int? = null,
+        override val darkColor: Int? = null
+    ) : HomeScreenState(background, lightColor, darkColor)
 
-        data class Error(
-            override val text: String,
-            override val drawable: Drawable,
-            override val lightColor: Int,
-            override val darkColor: Int
-        ) : Content(text, drawable, lightColor, darkColor)
-    }
 }
