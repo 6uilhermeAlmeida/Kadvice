@@ -9,7 +9,7 @@ class PhotoRepositoryImpl @Inject constructor(
     private val unsplashService: UnsplashService
 ) : PhotoRepository {
 
-    override suspend fun fetchPhoto(query: String): Photo {
+    override suspend fun fetchRandomPhoto(query: String): Photo {
         val networkResponse = unsplashService.fetchPhoto(query)
         val randomPhoto = networkResponse.results.take(10).random()
 

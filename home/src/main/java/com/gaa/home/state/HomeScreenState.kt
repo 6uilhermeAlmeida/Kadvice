@@ -20,7 +20,8 @@ sealed class HomeScreenState(
         val text: String,
         override val background: Drawable?,
         override val lightColor: Int?,
-        override val darkColor: Int?
+        override val darkColor: Int?,
+        val authorPlug: String
     ) : HomeScreenState(background, lightColor, darkColor)
 
     data class Error(

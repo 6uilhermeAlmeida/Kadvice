@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/darkGrey"
-    app:layoutDescription="@xml/home_fragment_scene2"
+    app:layoutDescription="@xml/home_fragment_scene"
     tools:context=".fragment.HomeFragment">
 
     <ImageView
@@ -58,26 +58,28 @@
         style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="8dp"
         android:indeterminate="true"
         android:indeterminateTint="@color/lightGrey"
         android:interpolator="@android:interpolator/anticipate_overshoot"
+        app:layout_constraintBottom_toTopOf="@id/tv_author"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_refresh_home" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/tv_refresh_home"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="8dp"
         android:alpha="0.6"
         android:text="@string/swipe_up_for_a_new_advice"
         android:textColor="@color/lightGrey"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:drawableTopCompat="@drawable/ic_round_keyboard_arrow_up_24"
+        app:layout_constraintBottom_toTopOf="@+id/pgbar_home"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:drawableTopCompat="@drawable/ic_round_keyboard_arrow_up_24" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
@@ -85,5 +87,20 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_end="120dp" />
+
+    <TextView
+        android:id="@+id/tv_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:alpha="0"
+        android:fontFamily="@font/abril_fatface"
+        android:textAlignment="viewEnd"
+        android:textColor="@color/lightGrey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"
+        tools:text="Photo by Name \n@username" />
 
 </androidx.constraintlayout.motion.widget.MotionLayout>

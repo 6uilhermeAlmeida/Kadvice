@@ -1,6 +1,7 @@
 package com.gaa.home.fragment
 
 import android.content.res.ColorStateList
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -35,7 +36,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewLifecycleOwner.lifecycleScope.run {
+        viewLifecycleOwner.lifecycleScope.apply {
             collectState()
             setLoadingListener()
         }
@@ -49,15 +50,22 @@ class HomeFragment : Fragment() {
         binding.homeMotionLayout.currentStateAsFlow().collect { currentState ->
             val isLoading = currentState == R.id.loading
             if (isLoading) viewModel.requestAdvice()
-            binding.homeMotionLayout.enableTransition(R.id.startToLoading, !isLoading)
+            binding.homeMotionLayout.enableTransition(R.id.contentToLoading, !isLoading)
         }
     }
 
     private fun HomeScreenState.apply() = binding.run {
         val lightColor = lightColor ?: getColor(R.color.lightGrey)
+        val darkColor = darkColor ?: getColor(R.color.darkGrey)
+
+        tvAuthor.visibility = if (background != null) View.VISIBLE else View.INVISIBLE
+        val drawable = background ?: ColorDrawable(darkColor)
+
         tvHome.setTextColor(lightColor)
         pgbarHome.indeterminateTintList = ColorStateList.valueOf(lightColor)
-        ivDimHome.setBackgroundColor(darkColor ?: getColor(R.color.darkGrey))
+        tvAuthor.setTextColor(lightColor)
+        tvAuthor.backgroundTintList = ColorStateList.valueOf(darkColor)
+        ivDimHome.setBackgroundColor(darkColor)
 
         val shouldLoadDrawable: Boolean
 
@@ -67,29 +75,33 @@ class HomeFragment : Fragment() {
                 startLoadingAnimation(isInitial)
             }
 
-            is Success, is Error -> {
+            is Success -> {
                 shouldLoadDrawable = true
-                tvHome.text =  when(this@apply) {
-                    is Success -> text
-                    is Error -> getString(textResId)
-                    else -> throw IllegalStateException()
-                }
+                tvHome.text = text
+                tvAuthor.text = authorPlug
+                startContentAnimation()
+            }
+
+            is Error -> {
+                shouldLoadDrawable = true
+                tvHome.setText(textResId)
+                tvHome.setTextColor(getColor(R.color.red))
                 startContentAnimation()
             }
         }
 
-        if (shouldLoadDrawable) ivBgHome.load(background) { crossfade(1000) }
+        if (shouldLoadDrawable) ivBgHome.load(drawable) { crossfade(1000) }
     }
 
     private fun startContentAnimation() = binding.homeMotionLayout.run {
         when (currentState) {
-            R.id.initial_loading -> setTransition(R.id.initToStart).also { transitionToEnd() }
-            R.id.loading -> setTransition(R.id.startToLoading).also { transitionToStart() }
+            R.id.initial_loading -> setTransition(R.id.initToContent).also { transitionToEnd() }
+            R.id.loading -> setTransition(R.id.contentToLoading).also { transitionToStart() }
         }
     }
 
     private fun startLoadingAnimation(isInitialLoading: Boolean) = binding.homeMotionLayout.run {
-        if (isInitialLoading) setTransition(R.id.initToStart).also { transitionToStart() }
-        else setTransition(R.id.startToLoading).also { transitionToEnd() }
+        if (isInitialLoading) setTransition(R.id.initToContent).also { transitionToStart() }
+        else setTransition(R.id.contentToLoading).also { transitionToEnd() }
     }
 }

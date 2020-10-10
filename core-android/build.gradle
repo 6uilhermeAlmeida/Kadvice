@@ -61,4 +61,7 @@ dependencies {
 
     // Constraint layout
     api "androidx.constraintlayout:constraintlayout:$constraint_layout_version"
+
+    // Material
+    api "com.google.android.material:material:$material_version"
 }

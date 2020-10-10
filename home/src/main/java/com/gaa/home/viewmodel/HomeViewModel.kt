@@ -1,6 +1,5 @@
 package com.gaa.home.viewmodel
 
-import android.annotation.SuppressLint
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
@@ -23,7 +22,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-@SuppressLint("MissingPermission")
 class HomeViewModel @ViewModelInject constructor(
     private val getRandomAdviceAndMatchingPhoto: GetRandomAdviceAndMatchingPhoto,
     private val getDrawableWithColors: GetDrawableWithColors,
@@ -53,10 +51,11 @@ class HomeViewModel @ViewModelInject constructor(
             val drawableWithColors = getDrawableWithColors(photo.url)
 
             val lightColor = drawableWithColors?.lightColorHsl?.withSaturation(1f)?.toColor()
-            val darkColor = drawableWithColors?.darkColorHsl?.withLightness(0.2f)?.toColor()
+            val darkColor = drawableWithColors?.darkColorHsl?.withLightness(0.1f)?.toColor()
             val drawable = drawableWithColors?.drawable
+            val authorPlug = "Photo by ${photo.photographerName}\n@${photo.photographerUserName}"
 
-            _state.value = Success(advice.text, drawable, lightColor, darkColor)
+            _state.value = Success(advice.text, drawable, lightColor, darkColor, authorPlug)
         }
     }
 

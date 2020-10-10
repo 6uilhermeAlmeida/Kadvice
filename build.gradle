@@ -11,6 +11,7 @@ buildscript {
     ext.coil_version = '0.13.0'
     ext.palette_version = '1.0.0'
     ext.constraint_layout_version = '2.0.2'
+    ext.material_version = '1.2.1'
 
     repositories {
         google()
