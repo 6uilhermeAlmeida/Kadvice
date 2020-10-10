@@ -75,7 +75,7 @@
         <KeyFrameSet>
             <KeyAttribute
                 android:alpha="0"
-                motion:framePosition="80"
+                motion:framePosition="90"
                 motion:motionTarget="@+id/pgbar_home" />
             <KeyPosition
                 motion:motionTarget="@+id/tv_author"
