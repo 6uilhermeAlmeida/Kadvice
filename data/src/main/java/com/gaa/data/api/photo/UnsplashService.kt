@@ -9,7 +9,7 @@ class UnsplashService @Inject constructor(private val httpClient: HttpClient) {
 
     suspend fun fetchPhoto(query: String): UnsplashPhotoResponse {
         return httpClient.get("https://api.unsplash.com/search/photos") {
-            header("Authorization", "Client-ID $UNSPLASH_API_KEY")
+            header("Authorization", "Client-ID ${unsplashApiKey()}")
             parameter("query", query)
             parameter("orderBy", "latest")
         }
