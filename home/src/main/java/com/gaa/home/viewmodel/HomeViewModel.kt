@@ -68,7 +68,13 @@ class HomeViewModel @ViewModelInject constructor(
     }
 
     private fun MutableStateFlow<HomeScreenState?>.startLoadingState() {
-        value = Loading(value == null, value?.background, value?.lightColor, value?.darkColor)
+        value = Loading(
+            isInitial = value == null,
+            background = value?.background,
+            lightColor = value?.lightColor,
+            darkColor = value?.darkColor,
+            authorPlug = value?.authorPlug.orEmpty()
+        )
     }
 }
 

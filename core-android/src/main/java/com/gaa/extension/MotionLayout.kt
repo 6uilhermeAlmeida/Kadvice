@@ -1,21 +1,20 @@
 package com.gaa.extension
 
 import androidx.constraintlayout.motion.widget.MotionLayout
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 
-fun MotionLayout.currentStateAsFlow(): StateFlow<Int> {
-    val stateFlow = MutableStateFlow(this.currentState)
-
+fun MotionLayout.stateAsFlow(): Flow<Int> = callbackFlow {
+    offer(currentState)
     val listener = object : MotionLayout.TransitionListener {
         override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) = Unit
         override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) = Unit
         override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) = Unit
-        override fun onTransitionCompleted(motionLayout: MotionLayout, p1: Int) {
-            stateFlow.value = motionLayout.currentState
+        override fun onTransitionCompleted(motionLayout: MotionLayout, currentId: Int) {
+            offer(currentId)
         }
     }
-
-    this@currentStateAsFlow.addTransitionListener(listener)
-    return stateFlow
+    addTransitionListener(listener)
+    awaitClose { removeTransitionListener(listener) }
 }

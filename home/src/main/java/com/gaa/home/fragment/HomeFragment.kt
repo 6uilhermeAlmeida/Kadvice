@@ -11,12 +11,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import coil.load
-import com.gaa.extension.currentStateAsFlow
 import com.gaa.extension.getColor
+import com.gaa.extension.stateAsFlow
 import com.gaa.home.R
 import com.gaa.home.databinding.HomeFragmentBinding
 import com.gaa.home.state.HomeScreenState
-import com.gaa.home.state.HomeScreenState.*
+import com.gaa.home.state.HomeScreenState.Loading
 import com.gaa.home.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -47,7 +47,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun LifecycleCoroutineScope.setLoadingListener() = launchWhenResumed {
-        binding.homeMotionLayout.currentStateAsFlow().collect { currentState ->
+        binding.homeMotionLayout.stateAsFlow().collect { currentState ->
             val isLoading = currentState == R.id.loading
             if (isLoading) viewModel.requestAdvice()
             binding.homeMotionLayout.enableTransition(R.id.contentToLoading, !isLoading)
@@ -55,42 +55,21 @@ class HomeFragment : Fragment() {
     }
 
     private fun HomeScreenState.apply() = binding.run {
-        val lightColor = lightColor ?: getColor(R.color.lightGrey)
         val darkColor = darkColor ?: getColor(R.color.darkGrey)
-
-        tvAuthor.visibility = if (background != null) View.VISIBLE else View.INVISIBLE
         val drawable = background ?: ColorDrawable(darkColor)
+        val lightColor = lightColor ?: getColor(R.color.lightGrey)
 
         tvHome.setTextColor(lightColor)
         pgbarHome.indeterminateTintList = ColorStateList.valueOf(lightColor)
         tvAuthor.setTextColor(lightColor)
-        tvAuthor.backgroundTintList = ColorStateList.valueOf(darkColor)
         ivDimHome.setBackgroundColor(darkColor)
 
-        val shouldLoadDrawable: Boolean
+        val shouldLoadDrawable = this@apply !is Loading || ivBgHome.drawable == null
+        ivBgHome.takeIf { shouldLoadDrawable }?.load(drawable) { crossfade(1000) }
 
-        when (this@apply) {
-            is Loading -> {
-                shouldLoadDrawable = ivBgHome.drawable == null
-                startLoadingAnimation(isInitial)
-            }
-
-            is Success -> {
-                shouldLoadDrawable = true
-                tvHome.text = text
-                tvAuthor.text = authorPlug
-                startContentAnimation()
-            }
-
-            is Error -> {
-                shouldLoadDrawable = true
-                tvHome.setText(textResId)
-                tvHome.setTextColor(getColor(R.color.red))
-                startContentAnimation()
-            }
-        }
-
-        if (shouldLoadDrawable) ivBgHome.load(drawable) { crossfade(1000) }
+        tvAuthor.text = authorPlug
+        tvHome.text = this@apply.getAdvice(requireContext())
+        if (this@apply is Loading) startLoadingAnimation(isInitial) else startContentAnimation()
     }
 
     private fun startContentAnimation() = binding.homeMotionLayout.run {

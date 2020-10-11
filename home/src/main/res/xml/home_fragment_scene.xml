@@ -2,21 +2,43 @@
 <MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:motion="http://schemas.android.com/apk/res-auto">
 
+    <ConstraintSet android:id="@+id/initial_loading">
+        <Constraint
+            android:id="@id/tv_refresh_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            motion:layout_constraintBottom_toTopOf="@id/guideline"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent">
+            <PropertySet android:alpha="0" />
+        </Constraint>
+        <Constraint android:id="@id/tv_home">
+            <Transform android:translationY="-50dp" />
+        </Constraint>
+        <Constraint
+            android:id="@id/pgbar_home"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toTopOf="parent" />
+    </ConstraintSet>
 
     <ConstraintSet android:id="@+id/content">
-        <Constraint android:id="@+id/pgbar_home">
+        <Constraint android:id="@id/pgbar_home">
             <PropertySet android:alpha="0" />
         </Constraint>
 
-        <Constraint android:id="@+id/tv_home">
+        <Constraint android:id="@id/tv_home">
             <PropertySet android:alpha="1" />
         </Constraint>
 
-        <Constraint android:id="@+id/iv_dim_home">
+        <Constraint android:id="@id/iv_dim_home">
             <PropertySet android:alpha="0.8" />
         </Constraint>
 
-        <Constraint android:id="@+id/iv_bg_home">
+        <Constraint android:id="@id/iv_bg_home">
             <Transform
                 android:scaleX="1.1"
                 android:scaleY="1.1" />
@@ -31,41 +53,56 @@
             <PropertySet android:alpha="0" />
         </Constraint>
 
-        <Constraint android:id="@+id/iv_dim_home">
+        <Constraint android:id="@id/iv_dim_home">
             <PropertySet android:alpha="0.5" />
         </Constraint>
 
-        <Constraint android:id="@+id/iv_bg_home">
+        <Constraint android:id="@id/tv_author">
+            <PropertySet android:alpha="1" />
+        </Constraint>
+
+        <Constraint android:id="@id/iv_bg_home">
             <Transform
                 android:scaleX="1"
                 android:scaleY="1" />
         </Constraint>
         <Constraint
-            android:id="@+id/tv_refresh_home"
-            motion:layout_constraintEnd_toEndOf="parent"
+            android:id="@id/tv_refresh_home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            motion:layout_constraintBottom_toTopOf="@+id/pgbar_home"
             android:alpha="0"
+            motion:layout_constraintBottom_toTopOf="@+id/pgbar_home"
+            motion:layout_constraintEnd_toEndOf="parent"
             motion:layout_constraintStart_toStartOf="parent" />
         <Constraint
-            motion:layout_constraintEnd_toEndOf="parent"
+            android:id="@id/tv_author"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:alpha="1"
-            motion:layout_constraintHorizontal_bias="1.0"
-            motion:layout_constraintStart_toStartOf="parent"
-            android:id="@+id/tv_author"
+            android:layout_marginBottom="16dp"
             motion:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="16dp" />
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintHorizontal_bias="1.0"
+            motion:layout_constraintStart_toStartOf="parent" />
 
     </ConstraintSet>
 
     <Transition
+        android:id="@+id/initToContent"
+        motion:constraintSetEnd="@id/content"
+        motion:constraintSetStart="@id/initial_loading">
+        <KeyFrameSet>
+            <KeyAttribute
+                android:alpha="0"
+                motion:framePosition="5"
+                motion:motionTarget="@id/pgbar_home" />
+        </KeyFrameSet>
+    </Transition>
+
+    <Transition
         android:id="@+id/contentToLoading"
-        motion:constraintSetEnd="@+id/loading"
+        motion:constraintSetEnd="@id/loading"
         motion:constraintSetStart="@id/content"
         motion:motionInterpolator="easeIn">
         <OnSwipe
@@ -76,52 +113,17 @@
             <KeyAttribute
                 android:alpha="0"
                 motion:framePosition="90"
-                motion:motionTarget="@+id/pgbar_home" />
+                motion:motionTarget="@id/pgbar_home" />
             <KeyPosition
-                motion:motionTarget="@+id/tv_author"
                 motion:framePosition="1"
                 motion:keyPositionType="deltaRelative"
-                motion:percentX="0"/>
+                motion:motionTarget="@id/tv_author"
+                motion:percentX="0" />
             <KeyPosition
-                motion:motionTarget="@+id/tv_author"
                 motion:framePosition="30"
                 motion:keyPositionType="deltaRelative"
+                motion:motionTarget="@id/tv_author"
                 motion:percentX="0" />
-        </KeyFrameSet>
-    </Transition>
-
-    <ConstraintSet android:id="@+id/initial_loading">
-        <Constraint
-            android:id="@+id/tv_refresh_home"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            motion:layout_constraintStart_toStartOf="parent"
-            motion:layout_constraintEnd_toEndOf="parent"
-            motion:layout_editor_absoluteY="592dp"
-            motion:layout_constraintBottom_toTopOf="@id/guideline">
-            <PropertySet android:alpha="0" />
-        </Constraint><Constraint
-            android:id="@+id/tv_home">
-            <Transform android:translationY="-50dp" />
-        </Constraint>
-        <Constraint
-            android:id="@+id/pgbar_home"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            motion:layout_constraintEnd_toEndOf="parent"
-            motion:layout_constraintStart_toStartOf="parent"
-            motion:layout_constraintTop_toTopOf="parent"
-            motion:layout_constraintBottom_toBottomOf="parent" />
-    </ConstraintSet>
-    <Transition
-        android:id="@+id/initToContent"
-        motion:constraintSetEnd="@id/content"
-        motion:constraintSetStart="@id/initial_loading" >
-        <KeyFrameSet >
-            <KeyAttribute
-                motion:motionTarget="@+id/pgbar_home"
-                motion:framePosition="5"
-                android:alpha="0" />
         </KeyFrameSet>
     </Transition>
 </MotionScene>
