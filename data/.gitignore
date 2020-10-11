@@ -1,2 +1,2 @@
 /build
-!/src/main/java/com/gaa/data/api/photo/UNSPLASH_API_KEY.kt
+src/main/java/com/gaa/data/api/photo/UNSPLASH_API_KEY.kt
