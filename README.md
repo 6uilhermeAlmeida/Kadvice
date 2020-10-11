@@ -5,7 +5,9 @@ This app is merely a sample and has no real use out there. It fetches a random a
 
 My main goal with this project is to explore some emerging technologies, keep tuned for future commits!
 
-![kadvice.gif](kadvice.gif)
+Small preview :
+
+<img src="kadvice.gif" height="250"/>
 
 ## The Stack 🧠
 
