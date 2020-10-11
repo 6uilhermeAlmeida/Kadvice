@@ -24,6 +24,6 @@ Kadvice is a multi-module Android application that strives for a *CLEAN* archite
  3. Go to `UNSPLASH_API_KEY.kt` and replace the TODO with your own key
  4. You're done! Run the project with Android Studio and get yourself some random advice 🤗
 
-**The app itself:**
+**Some examples of the app:**
 
-<img src="kadvice.gif" height="400"/>
+<img src="kadvice-1.png" height="400"/>
