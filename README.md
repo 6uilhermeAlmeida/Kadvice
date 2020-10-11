@@ -5,6 +5,8 @@ This app is merely a sample and has no real use out there. It fetches a random a
 
 My main goal with this project is to explore some emerging technologies, keep tuned for future commits!
 
+![kadvice.gif](kadvice.gif)
+
 ## The Stack 🧠
 
 Kadvice is a multi-module Android application that strives for a *CLEAN* architecture. It uses *MVVM* on the presentation layer, the *UseCase* pattern for domain access and the *Repository* pattern for data access.
