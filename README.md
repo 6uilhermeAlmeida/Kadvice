@@ -31,5 +31,4 @@ Kadvice is a multi-module Android application that strives for a *CLEAN* archite
   <img src="/kadvice-1_1.png" width="180" />
   <img src="/kadvice-2.png" width="180" /> 
   <img src="/kadvice-3.png" width="180" />
-  <img src="/kadvice-4.png" width="180" />
 </p>
