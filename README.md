@@ -1,7 +1,7 @@
 # Kadvice 🐻
 *An Android application that gives you advice. Kotlin everywhere.*
 
-This app is merely a sample and has no real use out there. It fetches a random advice from [AdviceSlip API](https://api.adviceslip.com/) and presents it alongside a "matching" beautiful image from [Unsplash API](https://unsplash.com/developers) (the query is the advice itself and all kinds of non-related images might appear 🙈).
+Kadvice fetches a random advice from [AdviceSlip API](https://api.adviceslip.com/) and presents it alongside a "matching" beautiful image from [Unsplash API](https://unsplash.com/developers) (the query is the advice itself and all kinds of non-related images might appear 🙈).
 
 My main goal with this project is to explore some emerging technologies, keep tuned for future commits!
 
