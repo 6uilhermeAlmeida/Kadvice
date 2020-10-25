@@ -7,7 +7,7 @@ My main goal with this project is to explore some emerging technologies, keep tu
 
 ## The Stack 🧠
 
-Kadvice is a multi-module Android application that strives for a *CLEAN* architecture. It uses *MVVM* on the presentation layer, the *UseCase* pattern for domain access and the *Repository* pattern for data access.
+Kadvice is a multi-module Android application that strives for a *CLEAN* architecture. It uses *MVI* on the presentation layer, the *UseCase* pattern for domain access and the *Repository* pattern for data access.
 
 **Some cool libraries it uses** 😎  :
  - **Kotlin Coroutines & Flow** *for concurrency and reactivity*
